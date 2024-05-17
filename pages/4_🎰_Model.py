@@ -5,29 +5,44 @@ import joblib
 import pickle
 import random
 from streamlit_option_menu import option_menu
-
+import plotly.express as px
 
 st.title(':card_index: Mô hình dự đoán khách hàng rời bỏ')
-##
 
-# Hiển thị dictionary inputs
-#st.write(inputs)
-#print(inputs)
-##
 
-#with st.sidebar:
 selected = option_menu(
-    menu_title = "Home",
+    menu_title = "Option Menu",
     options = ["Input","Performance"],
-    icons=['person-circle','telephone-fill','chat-quote-fill'],
-    menu_icon='file-earmark-bar-graph',
+    icons=['door-closed-fill','display-fill'],
+    menu_icon='file-person',
     orientation = 'horizontal',
     )
     
 if selected == 'Performance':
-    model_lr = joblib.load('logistic_regression_model.pkl')
-    model_dt = joblib.load('decision_tree_model.pkl')
-    model_rf = joblib.load('random_forest_model.pkl')
+    # Data
+    data = {
+        "Model": ["Logistic Regression", "Decision Tree", "Random Forest"],
+        "Accuracy": [0.9808, 0.9759, 0.9837],
+        "Recall": [0.955, 0.955, 0.9497],
+        "Precision": [0.973, 0.955, 0.989],
+        "F1_Score": [0.964, 0.955, 0.969],
+        "ROC_AUC": [0.9727, 0.9693, 0.9729]
+    }
+
+    # Convert data to DataFrame
+    df = pd.DataFrame(data)
+
+    # Transform data for plotting
+    df_melt = df.melt(id_vars="Model", var_name="Metric", value_name="Value")
+
+    # Create interactive bar chart using Plotly
+    fig = px.bar(df_melt, x="Metric", y="Value", color="Model", barmode="group",
+                title="Comparison of Model Metrics", labels={"Value": "Score", "Metric": "Metric"})
+
+    fig.update_layout(width=1100,height=450)
+    # Display Plotly figure in Streamlit
+    st.plotly_chart(fig)
+
 
 else:
     @st.cache_data
@@ -89,6 +104,9 @@ else:
         return random_inputs
 
     def predict_with_model(inputs):
+        if inputs.get('Gender') is None:
+            st.error('Vui lòng nhập dữ liệu')
+            return
         input_df = pd.DataFrame([inputs])
         if models == 'Hồi quy Logistic':
             model = joblib.load('logistic_regression_model.pkl')
@@ -116,7 +134,7 @@ else:
             st.subheader('**Thông tin về khách hàng**')
 
             st.write('**1. Giới tính của khách hàng**')
-            gender = st.selectbox('*Vui lòng chọn:*', ['Male', 'Female'], index = None)
+            gender = st.selectbox('*Vui lòng chọn:*', ['Male', 'Female'], index=None)
 
             st.write('**2. Tuổi của khách hàng**')
             age = st.slider('*Vui lòng kéo chọn:*', min_value=18, max_value=100)
@@ -233,9 +251,10 @@ else:
                 'Churn Score': churn_score,
                 'CLTV': cltv
             }
+        
 
             # Chuyển các cột khác sang biến định lượng, không có giá trị mặc định
-            inputs['Gender'] = 0 if gender == 'Male' else 1
+            inputs['Gender'] = 0 if gender == 'Male' else 1 if gender == 'Female' else None
             inputs['Married'] = 0 if married_radio == 'Chưa kết hôn' else 1
             inputs['Dependents'] = 0 if dependents_radio == 'Không sống chung' else 1
             inputs['Referred a Friend'] = 0 if referred_radio == 'Không giới thiệu' else 1
