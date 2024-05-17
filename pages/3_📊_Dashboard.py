@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 from streamlit_option_menu import option_menu
 import pandas as pd
 import plotly.express as px
@@ -15,12 +16,11 @@ with st.sidebar:
         )
     
 
-
-
 if selected == "Khách hàng":
     st.title(f':shopping_bags: Chân dung khách hàng')
     #read data
-    df = pd.read_excel("df_dashboard.xlsx",index_col=0)
+    root_path = Path(__file__).parent.parent # pages < root
+    df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
 
     #side bar
     st.sidebar.header('Lọc dữ liệu tại đây:')
@@ -187,7 +187,8 @@ if selected == "Khách hàng":
 if selected == "Dịch vụ":
     st.title(f':telephone: Dịch vụ')
     #read data
-    df = pd.read_excel("df_dashboard.xlsx",index_col=0)
+    root_path = Path(__file__).parent.parent # pages < root
+    df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
 
     #side bar
     st.sidebar.header('Lọc dữ liệu tại đây:')
@@ -349,7 +350,8 @@ if selected == "Dịch vụ":
 if selected == "Nguyên nhân rời bỏ":
     st.title(f':runner::shopping_trolley: Nguyên nhân rời bỏ')
     #read data
-    df = pd.read_excel("df_dashboard.xlsx",index_col=0)
+    root_path = Path(__file__).parent.parent # pages < root
+    df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
     #overview
     @st.cache_data
     def compute_statistics(df):

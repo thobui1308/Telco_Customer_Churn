@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import joblib
@@ -108,12 +109,13 @@ else:
             st.error('Vui lòng nhập dữ liệu')
             return
         input_df = pd.DataFrame([inputs])
+        root_path = Path(__file__).parent.parent # pages < root
         if models == 'Hồi quy Logistic':
-            model = joblib.load('logistic_regression_model.pkl')
+            model = joblib.load(root_path/"models"/'logistic_regression_model.pkl')
         elif models == 'Cây quyết định':
-            model = joblib.load('decision_tree_model.pkl')
+            model = joblib.load(root_path/"models"/'decision_tree_model.pkl')
         elif models == 'Rừng cây quyết định':
-            model = joblib.load('random_forest_model.pkl')
+            model = joblib.load(root_path/"models"/'random_forest_model.pkl')
         prediction = model.predict(input_df)
         if prediction == 1:
             st.error('Khách hàng rời bỏ :sob:')
