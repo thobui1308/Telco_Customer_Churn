@@ -45,12 +45,12 @@ $ streamlit run Homepage.py
 
 ### Dataset page
 
-![Homepage](screenshots/dataset page.png)
+![Homepage](screenshots/dataset.png)
 
 ### Dashboard page
 
-![Homepage](screenshots/dashboard page.png)
+![Homepage](screenshots/dashboard.png)
 
 ### Model page
 
-![Homepage](screenshots/model page.png)
+![Homepage](screenshots/model.png)
