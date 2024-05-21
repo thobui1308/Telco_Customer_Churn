@@ -15,7 +15,6 @@ phik==0.11.1
 streamlit-pandas-profiling
 ydata-profiling
 
-scikitplot
 scikit-learn==1.2.2
 #scikit-learn
 sklearn.preprocessing
