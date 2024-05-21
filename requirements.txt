@@ -1,7 +1,7 @@
 pandas 
 numpy
 plotly
-streamlit ==1.31.1
+streamlit==1.31.1
 streamlit-option-menu
 streamlit-aggrid 
 streamlit-plotly-events
@@ -10,9 +10,9 @@ streamlit-folium
 streamlit-extras
 phik==0.12.4
 streamlit-pandas-profiling==0.1.3
-ydata-profiling == 3.2.0
+ydata-profiling
 scikit-learn==1.2.2
 #sklearn.preprocessing
-joblib == 1.1.1
+joblib==1.1.1
 utils
 
