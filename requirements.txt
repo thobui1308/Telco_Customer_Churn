@@ -9,10 +9,10 @@ streamlit-lottie
 streamlit-folium
 streamlit-extras
 phik==0.11.1
+visions==0.7.5
 streamlit-pandas-profiling
 ydata-profiling
 scikit-learn==1.2.2
 sklearn.preprocessing
 joblib==1.1.1
 utils
-visions==0.7.5
