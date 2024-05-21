@@ -11,10 +11,11 @@ streamlit-plotly-events
 streamlit-lottie 
 streamlit-folium
 streamlit-extras
-#phik==0.12.1
+phik==0.11.1
 streamlit-pandas-profiling
 ydata-profiling
 
+scikitplot
 scikit-learn==1.2.2
 #scikit-learn
 sklearn.preprocessing
