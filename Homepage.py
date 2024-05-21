@@ -4,7 +4,7 @@ from streamlit_lottie import st_lottie
 from streamlit_plotly_events import plotly_events
 
 st.set_page_config(layout="wide")
-st.title(':blue[Tình trạng khách hàng rời bỏ trong ngành viễn thông] :satellite_antenna:')
+st.title(':blue[Customer Churn in Telecommunication Industry] :satellite_antenna:')
 
 def load_lottieurl(url: str):
  r = requests.get(url)

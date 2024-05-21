@@ -10,24 +10,24 @@ st.set_page_config(layout="wide")
 with st.sidebar:
     selected = option_menu(
         menu_title = "Dashboard",
-        options = ["Khách hàng","Dịch vụ","Nguyên nhân rời bỏ"],
+        options = ["Customer","Service","Churn Reasons"],
         icons=['person-circle','telephone-fill','chat-quote-fill'],
         menu_icon='file-earmark-bar-graph'
         )
     
 
-if selected == "Khách hàng":
-    st.title(f':shopping_bags: Chân dung khách hàng')
+if selected == "Customer":
+    st.title(f':shopping_bags: Customer Profile')
     #read data
     root_path = Path(__file__).parent.parent # pages < root
     df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
 
     #side bar
-    st.sidebar.header('Lọc dữ liệu tại đây:')
+    st.sidebar.header('Filter data here:')
     #create filter
     status_options = list(df['Customer Status'].unique())
     select_status_options = st.sidebar.multiselect(
-        "Nhóm khách hàng:",
+        "Customer group:",
         options = status_options,
         default=[]
     )
@@ -49,13 +49,13 @@ if selected == "Khách hàng":
 
     left_column, middle_column, right_column = st.columns(3)
     with left_column:
-        st.info('Tổng số khách hàng:')
+        st.info('Total number of customers:')
         st.subheader("{:,}:shopping_bags:".format(total_customer))
     with middle_column:
-        st.info('Nhóm khách hàng:')
+        st.info('Customer groups:')
         st.subheader(f'{total_group} :man-girl-boy:')
     with right_column:
-        st.info('Độ tuổi trung bình của khách hàng:')
+        st.info('Average age of customers:')
         st.subheader(f'{int(mean_age)} :hourglass:' )
     st.markdown('---')
 
@@ -65,137 +65,138 @@ if selected == "Khách hàng":
     fig = px.pie(
         values=customer_status_count.values, 
         names=customer_status_count.index, 
-        title='Phân nhóm khách hàng'
+        title='Customer Groups'
     )
-    # Cài đặt kích thước của biểu đồ
+    # Set the size of the chart
     fig.update_layout(width=1100,height=450)
     st.plotly_chart(fig)
 
     ##
-    # Chia cột thành hai cột
+    # Split into two columns
     left_column, right_column = st.columns(2)
 
     with left_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm
+        # Calculate the number of customers in each group
         customer_count = df_filtered.groupby(['Customer Status', 'Gender']).size().reset_index(name='Count')
-        # Tính toán phần trăm khách hàng theo giới tính và trạng thái của khách hàng
+        # Calculate the percentage of customers by gender and customer status
         total_per_status = customer_count.groupby('Customer Status')['Count'].transform('sum')
         customer_count['Percentage'] = (customer_count['Count'] / total_per_status) * 100
-        # Tạo biểu đồ cột ghép bằng Plotly Express
+        # Create a grouped bar chart using Plotly Express
         fig = px.bar(customer_count, x='Customer Status', y='Percentage', color='Gender',
-                    barmode='group', text='Count', title='Giới tính khách hàng')
-        # Hiển thị giá trị số lượng và phần trăm trên cột
+                    barmode='group', text='Count', title='Customer Gender')
+        # Display the count and percentage values on the bars
         fig.update_traces(texttemplate='%{text:.0f}', textposition='inside')
-        fig.update_yaxes(title_text="Phần trăm (%)")
-        fig.update_xaxes(title_text="Nhóm khách hàng")
-        # Cài đặt kích thước của biểu đồ
+        fig.update_yaxes(title_text="Percentage (%)")
+        fig.update_xaxes(title_text="Customer Group")
+        # Set the size of the chart
         fig.update_layout(width=550,height=400)
-        # Hiển thị biểu đồ cột ghép trong Streamlit
+        # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
 
     with right_column: 
-        # Tính toán số lượng khách hàng trong mỗi nhóm
+        # Calculate the number of customers in each group
         customer_count = df_filtered.groupby(['Customer Status', 'Married']).size().reset_index(name='Count')
-        # Tính toán phần trăm khách hàng theo giới tính và trạng thái của khách hàng
+        # Calculate the percentage of customers by marital status and customer status
         total_per_status = customer_count.groupby('Customer Status')['Count'].transform('sum')
         customer_count['Percentage'] = (customer_count['Count'] / total_per_status) * 100
-        # Tạo biểu đồ cột ghép bằng Plotly Express
+        # Create a grouped bar chart using Plotly Express
         color_map_married = {'Yes': 'darkred', 'No': 'red'}
         fig = px.bar(customer_count, x='Customer Status', y='Percentage', color='Married',
-                    barmode='group', text='Count', title='Tình trạng hôn nhân của khách hàng',
+                    barmode='group', text='Count', title='Customer Marital Status',
                     color_discrete_map=color_map_married)
-        # Hiển thị giá trị số lượng và phần trăm trên cột
+        # Display the count and percentage values on the bars
         fig.update_traces(texttemplate='%{text:.0f}', textposition='inside')
-        fig.update_yaxes(title_text="Phần trăm (%)")
-        fig.update_xaxes(title_text="Nhóm khách hàng")
-        # Cài đặt kích thước của biểu đồ
+        fig.update_yaxes(title_text="Percentage (%)")
+        fig.update_xaxes(title_text="Customer Group")
+        # Set the size of the chart
         fig.update_layout(width=550,height=400)
-        # Hiển thị biểu đồ cột ghép trong Streamlit
+        # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
 
     ##
-    # Chia cột thành hai cột
+    # Split into two columns
     left_column, right_column = st.columns(2)
     with left_column:
-        # Vẽ biểu đồ KDE bằng Seaborn
+        # Draw KDE plot using Seaborn
         import seaborn as sns
         import matplotlib.pyplot as plt
         plt.figure(figsize=(8, 6))
         sns.kdeplot(data=df_filtered['Age'], shade=True)
-        plt.title('Phân phối tuổi của khách hàng')
-        plt.xlabel('Tuổi')
-        plt.ylabel('Mật độ')
+        plt.title('Customer Age Distribution')
+        plt.xlabel('Age')
+        plt.ylabel('Density')
         plt.grid(True)
         plt.xticks(range(20, 80, 5))
         plt.yticks(range(0, 1, 1))
         plt.grid(False)
         st.set_option('deprecation.showPyplotGlobalUse', False)
-        # Xóa khung
+        # Remove frame
         sns.despine()
-        # Hiển thị biểu đồ KDE trong Streamlit
+        # Display KDE plot in Streamlit
         st.pyplot()
 
     with right_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
+        # Calculate the number of customers in each age range and status
         customer_count = df_filtered.groupby(['Age Range', 'Customer Status']).size().reset_index(name='Count')
-        # Tạo biểu đồ Sunburst bằng Plotly Express
+        # Create a Sunburst chart using Plotly Express
         fig = px.sunburst(customer_count, path=['Customer Status', 'Age Range'], values='Count',
-                        title='Nhóm tuổi của khách hàng')
-        # Cài đặt kích thước của biểu đồ
+                        title='Customer Age Range')
+        # Set the size of the chart
         fig.update_layout(width=550,height=450)
-        # Hiển thị biểu đồ Sunburst trong Streamlit
+        # Display the Sunburst chart in Streamlit
         st.plotly_chart(fig)
 
     ##
     left_column, right_column = st.columns(2)
 
     with left_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm
+        # Calculate the number of customers in each group
         customer_count = df_filtered.groupby(['Customer Status', 'Dependents']).size().reset_index(name='Count')
-        # Tính toán phần trăm khách hàng theo giới tính và trạng thái của khách hàng
+        # Calculate the percentage of customers by dependents and customer status
         total_per_status = customer_count.groupby('Customer Status')['Count'].transform('sum')
         customer_count['Percentage'] = (customer_count['Count'] / total_per_status) * 100
-        # Tạo biểu đồ cột ghép bằng Plotly Express
+        # Create a grouped bar chart using Plotly Express
         color_map_married = {'Yes': 'yellow', 'No': 'lightgoldenrodyellow'}
         fig = px.bar(customer_count, x='Customer Status', y='Percentage', color='Dependents',
-                    barmode='group', text='Count', title='Khách hàng có ở chung với người thân hay không?',
+                    barmode='group', text='Count', title='Do Customers Live with Dependents?',
                     color_discrete_map=color_map_married)
-        # Hiển thị giá trị số lượng và phần trăm trên cột
+        # Display the count and percentage values on the bars
         fig.update_traces(texttemplate='%{text:.0f}', textposition='inside')
-        fig.update_yaxes(title_text="Phần trăm (%)")
-        fig.update_xaxes(title_text="Nhóm khách hàng")
-        # Cài đặt kích thước của biểu đồ
+        fig.update_yaxes(title_text="Percentage (%)")
+        fig.update_xaxes(title_text="Customer Group")
+        # Set the size of the chart
         fig.update_layout(width=550,height=400)
-        # Hiển thị biểu đồ cột ghép trong Streamlit
+        # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
 
     with right_column:
-        # Đếm số lượng Customer ID cho mỗi nhóm
-        df_count = df_filtered.groupby([ 'Number of Dependents','Customer Status',]).size().reset_index(name='Count')
-        # Tạo biểu đồ cây bằng Plotly Express
+        # Count the number of Customer IDs in each group
+        df_count = df_filtered.groupby(['Number of Dependents', 'Customer Status']).size().reset_index(name='Count')
+        # Create a treemap chart using Plotly Express
         fig = px.treemap(df_count, path=['Number of Dependents', 'Customer Status'], values='Count',
-                        title='Số người thân ở chung với khách hàng')
-        # Cài đặt kích thước của biểu đồ
+                        title='Number of Dependents Living with Customers')
+        # Set the size of the chart
         fig.update_layout(width=600,height=450)
-        # Hiển thị biểu đồ cây trong Streamlit
+        # Display the treemap chart in Streamlit
         st.plotly_chart(fig)
+
 
 
 
 
     
-if selected == "Dịch vụ":
-    st.title(f':telephone: Dịch vụ')
+if selected == "Service":
+    st.title(f':telephone: Service')
     #read data
     root_path = Path(__file__).parent.parent # pages < root
     df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
 
     #side bar
-    st.sidebar.header('Lọc dữ liệu tại đây:')
+    st.sidebar.header('Filter data here:')
     #create filter
     status_options = list(df['Customer Status'].unique())
     select_status_options = st.sidebar.multiselect(
-        "Nhóm khách hàng:",
+        "Customer group:",
         options = status_options,
         default=[]
     )
@@ -208,8 +209,8 @@ if selected == "Dịch vụ":
     @st.cache_data
     def compute_statistics(df_filtered):
         total_service = len(df_filtered)
-        mean_tenure = round(df_filtered['Tenure in Months'].mean(),2)
-        mean_satisfied = round(df_filtered['Satisfaction Score'].mean(),1)
+        mean_tenure = round(df_filtered['Tenure in Months'].mean(), 2)
+        mean_satisfied = round(df_filtered['Satisfaction Score'].mean(), 1)
         star_rating = ":star:" * int(mean_satisfied)
         mean_age = df_filtered['Number of Referrals'].mean()
 
@@ -219,136 +220,138 @@ if selected == "Dịch vụ":
 
     left_column, middle_left_column, middle_right_column, right_column = st.columns(4)
     with left_column:
-        st.info('Tổng số dịch vụ:')
+        st.info('Total number of services:')
         st.subheader("{:,} :telephone_receiver:".format(total_service))
     with middle_left_column:
-        st.info('Trung bình tháng hợp đồng:')
+        st.info('Average contract months:')
         st.subheader(f"{mean_tenure} :memo:")
     with middle_right_column:
-        st.info('Mức độ hài lòng:')
+        st.info('Satisfaction level:')
         st.subheader(f'{mean_satisfied} {star_rating}')
     with right_column:
-        st.info('Trung bình số người được giới thiệu:')
+        st.info('Average number of referrals:')
         st.subheader(f'{int(mean_age)} :love_letter:')
     st.markdown('---')
 
     ##
     left_column, right_column = st.columns(2)
     with left_column:
-        # Đếm số lượng khách hàng trong mỗi nhóm
+        # Count the number of customers in each group
         df_count = df_filtered.groupby(['Customer Status', 'Tenure in Months']).size().reset_index(name='Count')
 
-        # Tạo biểu đồ vùng bằng Plotly Express
+        # Create an area chart using Plotly Express
         fig = px.area(df_count, x='Tenure in Months', y='Count', 
-                    color='Customer Status', title='Số khách hàng theo số tháng sử dụng hợp đồng')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=590,height=460)
-        # Hiển thị biểu đồ vùng trong Streamlit
+                    color='Customer Status', title='Number of Customers by Contract Months')
+        # Set the size of the chart
+        fig.update_layout(width=590, height=460)
+        # Display the area chart in Streamlit
         st.plotly_chart(fig)
     with right_column:
-        # Đếm số lượng Customer ID cho mỗi nhóm
-        df_count = df_filtered.groupby([ 'Contract','Customer Status',]).size().reset_index(name='Count')
-        # Tạo biểu đồ cây bằng Plotly Express
+        # Count the number of Customer IDs in each group
+        df_count = df_filtered.groupby(['Contract', 'Customer Status']).size().reset_index(name='Count')
+        # Create a treemap chart using Plotly Express
         fig = px.treemap(df_count, path=['Contract', 'Customer Status'], values='Count',
-                        title='Loại hợp đồng')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=550,height=460)
-        # Hiển thị biểu đồ cây trong Streamlit
+                        title='Contract Type')
+        # Set the size of the chart
+        fig.update_layout(width=550, height=460)
+        # Display the treemap chart in Streamlit
         st.plotly_chart(fig)
 
     ##
     left_column, middle_column, right_column = st.columns(3)
     with left_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
+        # Calculate the number of customers in each internet type and status
         customer_count = df_filtered.groupby(['Internet Type', 'Customer Status']).size().reset_index(name='Count')
-        # Tạo biểu đồ Sunburst bằng Plotly Express
+        # Create a Sunburst chart using Plotly Express
         fig = px.sunburst(customer_count, path=['Customer Status', 'Internet Type'], values='Count',
-                        title='Loại Internet')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=300,height=400)
-        # Hiển thị biểu đồ Sunburst trong Streamlit
+                        title='Internet Type')
+        # Set the size of the chart
+        fig.update_layout(width=300, height=400)
+        # Display the Sunburst chart in Streamlit
         st.plotly_chart(fig)
     with middle_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
+        # Calculate the number of customers in each offer type and status
         customer_count = df_filtered.groupby(['Offer', 'Customer Status']).size().reset_index(name='Count')
-        # Tạo biểu đồ Sunburst bằng Plotly Express
+        # Create a Sunburst chart using Plotly Express
         fig = px.sunburst(customer_count, path=['Customer Status', 'Offer'], values='Count',
-                        title='Các loại yêu cầu')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=300,height=400)
-        # Hiển thị biểu đồ Sunburst trong Streamlit
+                        title='Offer Types')
+        # Set the size of the chart
+        fig.update_layout(width=300, height=400)
+        # Display the Sunburst chart in Streamlit
         st.plotly_chart(fig)
     with right_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
+        # Calculate the number of customers in each payment method and status
         customer_count = df_filtered.groupby(['Payment Method', 'Customer Status']).size().reset_index(name='Count')
-        # Tạo biểu đồ Sunburst bằng Plotly Express
+        # Create a Sunburst chart using Plotly Express
         fig = px.sunburst(customer_count, path=['Customer Status', 'Payment Method'], values='Count',
-                        title='Các phương thức thanh toán')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=350,height=400)
-        # Hiển thị biểu đồ Sunburst trong Streamlit
+                        title='Payment Methods')
+        # Set the size of the chart
+        fig.update_layout(width=350, height=400)
+        # Display the Sunburst chart in Streamlit
         st.plotly_chart(fig)
 
     ##
     left_column, right_column = st.columns(2)
     with left_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
+        # Calculate the number of customers in each satisfaction score and status
         customer_count = df_filtered.groupby(['Satisfaction Score', 'Customer Status']).size().reset_index(name='Count')
-        # Tạo biểu đồ Sunburst bằng Plotly Express
+        # Create a Sunburst chart using Plotly Express
         fig = px.sunburst(customer_count, path=['Customer Status', 'Satisfaction Score'], values='Count',
-                        title='Điểm hài lòng')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=600,height=430)
-        # Hiển thị biểu đồ Sunburst trong Streamlit
+                        title='Satisfaction Scores')
+        # Set the size of the chart
+        fig.update_layout(width=600, height=430)
+        # Display the Sunburst chart in Streamlit
         st.plotly_chart(fig)
     with right_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
-        customer_count = df_filtered.groupby(['Referred a Friend','Number of Referrals', 'Customer Status']).size().reset_index(name='Count')
-        # Tạo biểu đồ Sunburst bằng Plotly Express
-        fig = px.sunburst(customer_count, path=['Customer Status', 'Referred a Friend','Number of Referrals'], values='Count',
-                        title='Khách hàng giới thiệu bạn bè')
-        # Cài đặt kích thước của biểu đồ
-        fig.update_layout(width=600,height=430)
-        # Hiển thị biểu đồ Sunburst trong Streamlit
+        # Calculate the number of customers by referral status, number of referrals, and customer status
+        customer_count = df_filtered.groupby(['Referred a Friend', 'Number of Referrals', 'Customer Status']).size().reset_index(name='Count')
+        # Create a Sunburst chart using Plotly Express
+        fig = px.sunburst(customer_count, path=['Customer Status', 'Referred a Friend', 'Number of Referrals'], values='Count',
+                        title='Customers Referring Friends')
+        # Set the size of the chart
+        fig.update_layout(width=600, height=430)
+        # Display the Sunburst chart in Streamlit
         st.plotly_chart(fig)
+
     ##
-    st.write('**Các loại dịch vụ theo nhóm khách hàng:**')
-    Service = ['Phone Service', 'Multiple Lines','Internet Service', 'Online Security', 'Online Backup',
+    st.write('**Service types by customer group:**')
+    Service = ['Phone Service', 'Multiple Lines', 'Internet Service', 'Online Security', 'Online Backup',
                 'Device Protection Plan', 'Premium Tech Support', 'Streaming TV', 'Streaming Movies', 'Streaming Music', 'Unlimited Data']
     choose_service = st.selectbox('Please select a service', Service)
     if choose_service:
-        # Nhóm dữ liệu theo cả hai biến Customer Status và Phone Service, tính tổng số lượng khách hàng cho mỗi nhóm
-        customer_count = df_filtered.groupby([choose_service,'Customer Status']).size().reset_index(name='Count')
+        # Group data by both Customer Status and selected service, calculate the total number of customers in each group
+        customer_count = df_filtered.groupby([choose_service, 'Customer Status']).size().reset_index(name='Count')
 
-        # Tạo biểu đồ cột ghép bằng Plotly Express
+        # Create a grouped bar chart using Plotly Express
         fig = px.bar(customer_count, x=choose_service, y='Count', color='Customer Status',
                     barmode='group',
-                    labels={'Customer Status': 'Trạng thái khách hàng', 'Count': 'Số người dùng',
-                            choose_service: 'Dịch vụ'})
+                    labels={'Customer Status': 'Customer Status', 'Count': 'Number of Users',
+                            choose_service: 'Service'})
 
-        # Cài đặt kích thước của biểu đồ
+        # Set the size of the chart
         fig.update_layout(width=1100, height=450)
 
-        # Hiển thị biểu đồ cột ghép trong Streamlit
+        # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
+
     ##
-    st.write('**Các loại phí theo nhóm khách hàng:**')
+    st.write('**Fee types by customer group:**')
     Fee = ['Avg Monthly Long Distance Charges', 'Avg Monthly GB Download', 'Monthly Charge', 'Total Charges', 'Total Refunds',
             'Total Extra Data Charges', 'Total Long Distance Charges', 'Total Revenue']
     choose_fee = st.selectbox('Please select a fee', Fee)
     if choose_fee:
         fig = px.box(df_filtered, x='Customer Status', y=choose_fee,
-                    labels={'Customer Status': 'Trạng thái khách hàng', choose_fee: 'Phí'})
-        # Cài đặt kích thước của biểu đồ
+                    labels={'Customer Status': 'Customer Status', choose_fee: 'Fee'})
+        # Set the size of the chart
         fig.update_layout(width=1100, height=450)
-    # Hiển thị biểu đồ boxplot trong Streamlit
-    st.plotly_chart(fig)
+        # Display the box plot in Streamlit
+        st.plotly_chart(fig)
 
 
 
 
-if selected == "Nguyên nhân rời bỏ":
-    st.title(f':runner::shopping_trolley: Nguyên nhân rời bỏ')
+if selected == "Churn Reasons":
+    st.title(f':runner::shopping_trolley: Churn Reasons')
     #read data
     root_path = Path(__file__).parent.parent # pages < root
     df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
@@ -370,98 +373,96 @@ if selected == "Nguyên nhân rời bỏ":
 
     left_column, middle_left_column, middle_right_column, right_column = st.columns(4)
     with left_column:
-        st.info('Tổng số khách hàng rời bỏ:')
+        st.info('Total churned customers:')
         st.subheader("{:,} :runner:".format(total_customer))
     with middle_left_column:
-        st.info('Mức độ hài lòng:')
+        st.info('Average satisfaction score:')
         st.subheader(f'{mean_satisfied} {star_rating}')
     with middle_right_column:
-        st.info('Nhóm lý do rời bỏ:')
+        st.info('Number of churn categories:')
         st.subheader(f"{total_group_reason} :chart_with_downwards_trend:")
     with right_column:
-        st.info('Lý do rời bỏ:')
+        st.info('Number of churn reasons:')
         st.subheader(f'{total_reason} :thumbsdown:')
     st.markdown('---')
-    # Lọc DataFrame để chỉ bao gồm khách hàng có trạng thái là "Churned"
+    # Filter DataFrame to include only churned customers
     df_churned = df[df['Customer Status'] == 'Churned']
-    # Tính toán số lượng khách hàng trong mỗi nhóm tuổi và trạng thái
+    # Compute the count of customers in each churn group and reason
     customer_count = df_churned.groupby(['Churn Category', 'Churn Reason']).size().reset_index(name='Count')
-    # Tạo biểu đồ Sunburst bằng Plotly Express
+    # Create a Sunburst chart using Plotly Express
     fig = px.sunburst(customer_count, path=['Churn Category', 'Churn Reason'], values='Count',
-                    title='Nhóm lý do và các lý do khách hàng rời bỏ doanh nghiệp')
-    # Cài đặt kích thước của biểu đồ
+                    title='Churn categories and reasons for customer churn')
+    # Set the size of the chart
     fig.update_layout(width=1100, height=600)
-    # Hiển thị biểu đồ Sunburst trong Streamlit
+    # Display the Sunburst chart in Streamlit
     st.plotly_chart(fig)
     ##
     left_column, right_column = st.columns(2)
     with left_column:
-        st.info('Trung bình điểm rời bỏ:')
+        st.info('Average churn score:')
         st.subheader("{:,}".format(mean_churn_score))
     with right_column:
-        st.info('Trung bình điểm vòng đời khách hàng:')
+        st.info('Average customer lifetime value (CLTV):')
         st.subheader(f"{mean_cltv}")
     left_column, right_column = st.columns(2)
     with left_column:
-        # Đếm số lượng từng nhóm trong CLTV Category
+        # Count the number of each group in CLTV Category
         df_count = df['Churn Score Category'].value_counts().reset_index(name='Count')
         df_count.columns = ['Churn Score Category', 'Count']
-        # Tạo biểu đồ vùng bằng Plotly Express
+        # Create an area chart using Plotly Express
         fig = px.area(df_count, x='Churn Score Category', y='Count', 
-                    title='Số lượng khách hàng theo Nhóm điểm rời bỏ')
-        # Cài đặt kích thước của biểu đồ
+                    title='Number of customers in each churn score category')
+        # Set the size of the chart
         fig.update_layout(width=590, height=460)
-        # Hiển thị biểu đồ vùng trong Streamlit
+        # Display the area chart in Streamlit
         st.plotly_chart(fig)
     with right_column:
-                # Đếm số lượng từng nhóm trong CLTV Category
+                # Count the number of each group in CLTV Category
         df_count = df['CLTV Category'].value_counts().reset_index(name='Count')
         df_count.columns = ['CLTV Category', 'Count']
-        # Tạo biểu đồ vùng bằng Plotly Express
+        # Create an area chart using Plotly Express
         fig = px.area(df_count, x='CLTV Category', y='Count', 
-                    title='Số lượng khách hàng theo Nhóm điểm Vòng đời khách hàng')
-        # Cài đặt kích thước của biểu đồ
+                    title='Number of customers in each customer lifetime value (CLTV) category')
+        # Set the size of the chart
         fig.update_layout(width=590, height=460)
-        # Hiển thị biểu đồ vùng trong Streamlit
+        # Display the area chart in Streamlit
         st.plotly_chart(fig)
 
     left_column, right_column = st.columns(2)
 
     with left_column:
-        # Tính toán số lượng khách hàng trong mỗi nhóm
+        # Calculate the number of customers in each group
         customer_count = df.groupby(['Customer Status', 'Churn Score Category']).size().reset_index(name='Count')
-        # Tính toán phần trăm khách hàng theo giới tính và trạng thái của khách hàng
+        # Calculate the percentage of customers by gender and customer status
         total_per_status = customer_count.groupby('Customer Status')['Count'].transform('sum')
         customer_count['Percentage'] = (customer_count['Count'] / total_per_status) * 100
-        # Tạo biểu đồ cột ghép bằng Plotly Express
+        # Create a grouped bar chart using Plotly Express
         fig = px.bar(customer_count, x='Churn Score Category', y='Percentage', color='Customer Status',
-                    barmode='group', text='Count', title='Số lượng khách hàng trong từng nhóm Điểm rời bỏ')
-        # Hiển thị giá trị số lượng và phần trăm trên cột
+                    barmode='group', text='Count', title='Number of customers in each churn score category')
+        # Display the count and percentage values on the bars
         fig.update_traces(texttemplate='%{text:.0f}', textposition='inside')
-        fig.update_yaxes(title_text="Phần trăm (%)")
-        fig.update_xaxes(title_text="Nhóm khách hàng")
-        # Cài đặt kích thước của biểu đồ
+        fig.update_yaxes(title_text="Percentage (%)")
+        fig.update_xaxes(title_text="Customer Group")
+        # Set the size of the chart
         fig.update_layout(width=550,height=400)
-        # Hiển thị biểu đồ cột ghép trong Streamlit
+        # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
 
     with right_column: 
-        # Tính toán số lượng khách hàng trong mỗi nhóm
+        # Calculate the number of customers in each group
         customer_count = df.groupby(['Customer Status', 'CLTV Category']).size().reset_index(name='Count')
-        # Tính toán phần trăm khách hàng theo giới tính và trạng thái của khách hàng
+        # Calculate the percentage of customers by gender and customer status
         total_per_status = customer_count.groupby('Customer Status')['Count'].transform('sum')
         customer_count['Percentage'] = (customer_count['Count'] / total_per_status) * 100
-        # Tạo biểu đồ cột ghép bằng Plotly Express
+        # Create a grouped bar chart using Plotly Express
         fig = px.bar(customer_count, x='CLTV Category', y='Percentage', color='Customer Status',
-                    barmode='group', text='Count', title='Số lượng khách hàng trong từng nhóm Điểm vòng đời khách hàng')
-        # Hiển thị giá trị số lượng và phần trăm trên cột
+                    barmode='group', text='Count', title='Number of customers in each customer lifetime value (CLTV) category')
+        # Display the count and percentage values on the bars
         fig.update_traces(texttemplate='%{text:.0f}', textposition='inside')
-        fig.update_yaxes(title_text="Phần trăm (%)")
-        fig.update_xaxes(title_text="Nhóm khách hàng")
-        # Cài đặt kích thước của biểu đồ
+        fig.update_yaxes(title_text="Percentage (%)")
+        fig.update_xaxes(title_text="Customer Group")
+        # Set the size of the chart
         fig.update_layout(width=550,height=400)
-        # Hiển thị biểu đồ cột ghép trong Streamlit
+        # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
-
-                                        
 
