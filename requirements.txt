@@ -1,10 +1,7 @@
 pandas 
 numpy
-#openpyxl
-#Jinja2
 plotly
 streamlit
-#pydantic-settings
 streamlit-option-menu
 streamlit-aggrid 
 streamlit-plotly-events
@@ -16,7 +13,6 @@ streamlit-pandas-profiling
 ydata-profiling
 
 scikit-learn==1.2.2
-#scikit-learn
 sklearn.preprocessing
 joblib
 utils
