@@ -13,5 +13,6 @@ streamlit-pandas-profiling
 ydata-profiling
 scikit-learn==1.2.2
 sklearn.preprocessing
-joblib
+joblib==0.14.1
 utils
+visions==0.7.5
