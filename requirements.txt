@@ -1,7 +1,7 @@
 pandas 
 numpy
 plotly
-streamlit
+streamlit ==1.31.1
 streamlit-option-menu
 streamlit-aggrid 
 streamlit-plotly-events
