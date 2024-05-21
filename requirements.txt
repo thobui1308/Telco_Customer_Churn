@@ -12,7 +12,7 @@ streamlit-extras
 pandas-profiling
 streamlit-pandas-profiling
 ydata-profiling
-scikit-learn==1.2.2
+scikit-learn #==1.2.2
 #sklearn.preprocessing
 joblib
 utils
