@@ -33,6 +33,13 @@ if selected == 'Model Performance':
     
     df_performance = pd.DataFrame(performance_data)
     st.dataframe(df_performance)
+    df_per = pd.DataFrame(df_performance)
+    df_melt = df_per.melt(id_vars="Model", var_name="Metric", value_name="Value")
+    fig = px.bar(df_melt, x="Metric", y="Value", color="Model", barmode="group",
+                title="Comparison of scores among models", labels={"Value": "Score", "Metric": "Metric"})
+    fig.update_layout(width=1100, height=450)
+    st.plotly_chart(fig)
+
 
 
     #Corelation
