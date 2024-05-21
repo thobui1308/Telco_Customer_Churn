@@ -9,12 +9,11 @@ streamlit-plotly-events
 streamlit-lottie 
 streamlit-folium
 streamlit-extras
-#phik==0.12.4
-#pandas-profiling
-#streamlit-pandas-profiling
-#ydata-profiling
+phik==0.12.4
+pandas-profiling
+streamlit-pandas-profiling
+ydata-profiling==4.7.0
 scikit-learn==1.2.2
 #sklearn.preprocessing
 joblib
 utils
-
