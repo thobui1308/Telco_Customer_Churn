@@ -11,8 +11,8 @@ streamlit-lottie
 streamlit-folium
 streamlit-extras
 phik==0.12.4
+streamlit-ydata-profiling
 ydata-profiling==4.7.0
-streamlit-pandas-profiling==0.1.3
 scikit-learn==1.2.2
 sklearn.preprocessing
 joblib
