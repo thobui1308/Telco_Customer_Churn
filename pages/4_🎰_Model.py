@@ -25,10 +25,10 @@ if selected == 'Model Performance':
     # Example table of model performance
     performance_data = {
         "Model": ["Logistic Regression", "Decision Tree", "Random Forest"],
-        "Accuracy": [0.85, 0.78, 0.82, 0.86],
-        "Precision": [0.83, 0.76, 0.80, 0.85],
-        "Recall": [0.78, 0.74, 0.79, 0.84],
-        "F1 Score": [0.80, 0.75, 0.79, 0.84]
+        "Accuracy": [0.85, 0.78, 0.82],
+        "Precision": [0.83, 0.76, 0.80],
+        "Recall": [0.78, 0.74, 0.79],
+        "F1 Score": [0.80, 0.75, 0.79]
     }
     
     df_performance = pd.DataFrame(performance_data)
