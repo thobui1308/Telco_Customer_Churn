@@ -7,8 +7,8 @@ from streamlit_ydata_profiling import st_profile_report
 
 st.set_page_config(layout="wide")
 st.title(":bar_chart: Dataset")
+
 root_path = Path(__file__).parent.parent # pages < root
-df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
+df = pd.read_excel(root_path / "data" / "data.xlsx", index_col=0)
 df_profile = ProfileReport(df ,explorative=True)
 st_profile_report(df_profile)
-
