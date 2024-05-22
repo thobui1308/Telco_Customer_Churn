@@ -28,7 +28,7 @@ if selected == 'Model Performance':
         "Accuracy": [0.9766, 0.9801, 0.9865],
         "Precision": [0.9536, 0.9504, 0.9800],
         "Recall": [0.9549, 0.9718, 0.9662],
-        "F1 Score": [0.9536, 0.9610, 0.9730]
+        "F1 Score": [0.9536, 0.610, 0.9730]
     }
     
     df_performance = pd.DataFrame(performance_data)
