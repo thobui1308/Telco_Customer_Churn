@@ -1,15 +1,14 @@
 import pandas as pd
-import streamlit as st
 import numpy as np
 from pathlib import Path
 from ydata_profiling import ProfileReport
+import streamlit as st
 from streamlit_ydata_profiling import st_profile_report
 
 st.set_page_config(layout="wide")
 st.title(":bar_chart: Dataset")
-
 root_path = Path(__file__).parent.parent # pages < root
-df = pd.read_excel(root_path / "data" / "Data_Telco_Customer_Churn.xlsx", index_col=0)
+df = pd.read_excel(root_path / "data" / "df_dashboard.xlsx", index_col=0)
 df_profile = ProfileReport(df ,explorative=True)
 st_profile_report(df_profile)
 
