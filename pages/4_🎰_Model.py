@@ -24,7 +24,7 @@ if selected == 'Model Performance':
     
     # Example table of model performance
     performance_data = {
-        "Model": ["Logistic Regression", "Decision Tree", "Random Forest", "XGBoost"],
+        "Model": ["Logistic Regression", "Decision Tree", "Random Forest"],
         "Accuracy": [0.85, 0.78, 0.82, 0.86],
         "Precision": [0.83, 0.76, 0.80, 0.85],
         "Recall": [0.78, 0.74, 0.79, 0.84],
