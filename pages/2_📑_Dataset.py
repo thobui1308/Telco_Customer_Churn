@@ -8,7 +8,6 @@ from ydata_profiling import ProfileReport
 st.set_page_config(layout="wide")
 st.title(":bar_chart: Dataset")
 
-df = pd.read_excel("data.xlsx", index_col=0)
 root_path = Path(__file__).parent.parent # pages < root
 df = pd.read_excel(root_path / "data" / "Data_Telco_Customer_Churn.xlsx", index_col=0)
 df_profile = ProfileReport(df ,explorative=True)
