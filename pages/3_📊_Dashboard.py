@@ -89,7 +89,7 @@ if selected == "Customer":
         fig.update_yaxes(title_text="Percentage (%)")
         fig.update_xaxes(title_text="Customer Group")
         # Set the size of the chart
-        fig.update_layout(width=500,height=400)
+        fig.update_layout(width=450,height=400)
         # Display the grouped bar chart in Streamlit
         st.plotly_chart(fig)
 
