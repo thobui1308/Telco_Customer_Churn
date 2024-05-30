@@ -43,33 +43,40 @@ if selected == 'Model Performance':
 
 
     #Corelation
-    data_cor = {
+    feature_importance_data = {
         "Feature": [
-            "Churn Value", "Churn Score", "Internet Service", "Monthly Charge",
-            "Paperless Billing", "Unlimited Data", "Offer", "Age", "Streaming TV",
-            "Streaming Movies", "Avg Monthly GB Download", "Streaming Music",
-            "Multiple Lines", "Phone Service", "Gender",
-            "Avg Monthly Long Distance Charges", "Total Extra Data Charges",
-            "Total Refunds", "Device Protection Plan", "Online Backup", "CLTV",
-            "Payment Method", "Internet Type", "Referred a Friend", "Married",
-            "Premium Tech Support", "Online Security", "Total Charges",
-            "Number of Dependents", "Total Revenue", "Total Long Distance Charges",
-            "Dependents", "Number of Referrals", "Tenure in Months", "Contract",
-            "Satisfaction Score"
+            "Satisfaction Score", "Churn Score", "Contract", "Tenure in Months", "Monthly Charge",
+            "Number of Referrals", "Total Revenue", "Total Charges", "Age",
+            "Total Long Distance Charges", "Avg Monthly GB Download", "Internet Type",
+            "CLTV", "Number of Dependents", "Avg Monthly Long Distance Charges",
+            "Dependents", "Online Security", "Payment Method", "Internet Service",
+            "Offer", "Premium Tech Support", "Paperless Billing", "Multiple Lines",
+            "Total Extra Data Charges", "Streaming Music", "Referred a Friend", "Married",
+            "Unlimited Data", "Streaming Movies", "Gender", "Streaming TV",
+            "Online Backup", "Device Protection Plan", "Total Refunds", "Phone Service"
         ],
-        "Correlation": [
-            1.000000, 0.660772, 0.227890, 0.193356, 0.191825, 0.166545, 0.151112,
-            0.115760, 0.063228, 0.061382, 0.048868, 0.045587, 0.040102, 0.011942,
-            0.008612, 0.008120, 0.007139, -0.033709, -0.066160, -0.082255,
-            -0.127463, -0.135100, -0.139780, -0.149122, -0.150448, -0.164674,
-            -0.171226, -0.198546, -0.218780, -0.223003, -0.223756, -0.248542,
-            -0.286540, -0.352861, -0.435398, -0.754649
+        "Importance": [
+            0.380748, 0.287907, 0.050737, 0.031768, 0.022863,
+            0.022648, 0.021024, 0.019671, 0.017373,
+            0.015779, 0.015007, 0.012441,
+            0.011683, 0.011358, 0.011003,
+            0.008442, 0.007666, 0.006651, 0.006567,
+            0.004907, 0.004182, 0.003431, 0.002985,
+            0.002890, 0.002432, 0.002277, 0.002229,
+            0.002143, 0.001941, 0.001900, 0.001826,
+            0.001676, 0.001595, 0.001525, 0.000728
         ]
     }
-    df_cor = pd.DataFrame(data_cor)
-    fig = px.bar(df_cor, x="Feature", y="Correlation", title="Correlation with Churn Value", labels={"Correlation": "Correlation Coefficient", "Feature": "Features"})
-    fig.update_layout(width=1100, height=450)
+
+    df_importance = pd.DataFrame(feature_importance_data)
+
+    # Plot the feature importances
+    fig = px.bar(df_importance, x="Feature", y="Importance", title="Feature Importances in Random Forest Model", labels={"Importance": "Importance Score", "Feature": "Features"})
+    fig.update_layout(width=1100, height=450, xaxis_tickangle=-45)
+
+    # Display the plot
     st.plotly_chart(fig)
+
 
 
 else:
